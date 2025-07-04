@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ShaderManager">
+      <UniqueIdentifier>{ddb1c568-62a0-43df-8d3e-591b9d44a151}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MeshManager">
+      <UniqueIdentifier>{40a843aa-c0cb-4a0f-acc2-afb8c854d0df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cLightManager">
+      <UniqueIdentifier>{4aa3659f-ae14-4974-9727-987d7d4d54b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cLightManager\LightHelper">
+      <UniqueIdentifier>{337ce989-474b-45b2-b304-b9eadbc83b8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LocalFileLoad">
+      <UniqueIdentifier>{a3eeed14-1ca3-462c-abe8-9a5e90872636}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MeshManager\ModelInstance">
+      <UniqueIdentifier>{d0fa9b33-e2c0-4871-ac09-5dc0b5c66da4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KeyCallback">
+      <UniqueIdentifier>{98032711-5efb-4c1c-8af0-363867749946}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cShaderManager\cShader.cpp">
+      <Filter>ShaderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cShaderManager\cShaderManager.cpp">
+      <Filter>ShaderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cVAOManager\cVAOManager.cpp">
+      <Filter>MeshManager</Filter>
+    </ClCompile>
+    <ClCompile Include="cLightManager.cpp">
+      <Filter>cLightManager</Filter>
+    </ClCompile>
+    <ClCompile Include="LightHelper\cLightHelper.cpp">
+      <Filter>cLightManager\LightHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugSphereGenerator.cpp">
+      <Filter>cLightManager\LightHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadAndSave.cpp">
+      <Filter>LocalFileLoad</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelInstance.cpp">
+      <Filter>MeshManager\ModelInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyCallback.cpp">
+      <Filter>KeyCallback</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cShaderManager\cShaderManager.h">
+      <Filter>ShaderManager</Filter>
+    </ClInclude>
+    <ClInclude Include="cVAOManager\cVAOManager.h">
+      <Filter>MeshManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalOpenGL.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cVAOManager\meshObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cLightManager.h">
+      <Filter>cLightManager</Filter>
+    </ClInclude>
+    <ClInclude Include="LightHelper\cLightHelper.h">
+      <Filter>cLightManager\LightHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugSphereGenerator.h">
+      <Filter>cLightManager\LightHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadAndSave.h">
+      <Filter>LocalFileLoad</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelInstance.h">
+      <Filter>MeshManager\ModelInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyCallBack.h">
+      <Filter>KeyCallback</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="controls.txt" />
+  </ItemGroup>
+</Project>

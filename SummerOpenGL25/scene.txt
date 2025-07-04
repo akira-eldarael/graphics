@@ -1,0 +1,15 @@
+# Scene file for INFO-3111 Checkpoint #5
+# Student: Rahul Krishna Viahr Anilkumar (1191628)
+# Date: 2025-06-27 01:17:12
+# Format: meshName posX posY posZ orientX orientY orientZ scaleX scaleY scaleZ
+#
+assets/models/Utah_Teapot.ply -40 0 -44 -565 315 0 0.2 0.2 0.21
+assets/models/dolphin.ply 1 0 -78 1090 41 0 0.09 0.09 0.11
+assets/models/cow.ply 0 0 -22 0 72 0 1.7 1.7 1.7
+assets/models/bun_zipper.ply -17 0 -10 0 108 0 65 65 65
+assets/models/Utah_Teapot.ply 50 0 28 0 144 0 0.2 0.2 0.21
+assets/models/dolphin.ply 36 0 -30 -50 5 0 0.13 0.13 0.13
+assets/models/cow.ply -23 0 34 0 216 0 2.7 2.7 2.8
+assets/models/bun_zipper.ply -4 0 92 0 252 0 95 95 95
+assets/models/Utah_Teapot.ply 11 0 38 -10 288 0 0.2 0.2 0.21
+assets/models/dolphin.ply 96 0 10 0 324 0 0.17 0.17 0.17

@@ -1,0 +1,10 @@
+| Action                    | Key(s)                                          |
+| ------------------------- | ----------------------------------------------- |
+| Move camera               | `W`, `A`, `S`, `D`, `Q`, `E`                    |
+| Select next model         | `TAB`                                           |
+| Edit mode                 | `1`: Position  `2`: Orientation      `3`: Scale |
+| Modify selected object    | `Arrow Keys` + `Page Up/Down`                   |
+| Uniform scale             | `+`, `-`                                        |
+| Save scene                | `F5`                                            |
+| Load scene                | `F9`                                            |
+| Show selected object info | `I`                                             |
