@@ -51,10 +51,11 @@ struct sModelDrawInfo
 class cVAOManager
 {
 public:
-
+	/*here colors means rgba not rgb*/
 	bool LoadModelIntoVAO(std::string fileName, 
 						  sModelDrawInfo &drawInfo, 
-						  unsigned int shaderProgramID);
+						  unsigned int shaderProgramID, 
+						  bool hasNormals = false, bool hasColors = false);
 
 	// We don't want to return an int, likely
 	bool FindDrawInfoByModelName(std::string filename,
@@ -70,7 +71,8 @@ private:
 
 	// Loads the ply model file into a temporary array
 	bool m_LoadTheModel( std::string fileName, 
-						 sModelDrawInfo &drawInfo);
+						 sModelDrawInfo &drawInfo,
+						 bool hasNormals, bool hasColors);
 
 	std::string m_lastErrorString;
 	void m_AppendTextToLastError(std::string text, bool addNewLineBefore = true);

@@ -43,6 +43,8 @@ void main()
 	vec4 lightContrib = calculateLightContrib(vertColor.rgb, vertNormal.xyz, vertWorldPosition.xyz, vertSpecular);
 	
 	pixelColour.rgb = lightContrib.rgb;
+	//for debugging
+	//pixelColour.rgb = vertColor.rgb; 
 };
 
 // Feeney gave you this (it's inspired by the basic shader in Mike Bailey's Graphic Shaders book)

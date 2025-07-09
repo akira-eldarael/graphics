@@ -153,7 +153,7 @@ int main(void)
             std::string instanceKey = instance.meshName + "_instance_" + std::to_string(i);
 
             sModelDrawInfo modelInfo;
-            if (g_pMeshManager->LoadModelIntoVAO(instance.meshName, modelInfo, program))
+            if (g_pMeshManager->LoadModelIntoVAO(instance.meshName, modelInfo, program, true, true))
             {
                 std::cout << "Loaded: " << instance.displayName << " (Color: "
                     << instance.color.r << ", " << instance.color.g << ", " << instance.color.b << ")" << std::endl;
@@ -270,7 +270,7 @@ int main(void)
         }
 
         // Save scene before exit
-        std::cout << "Saving scene before exit..." << std::endl;
+        //std::cout << "Saving scene before exit..." << std::endl;
         //SaveSceneToFile("scene.txt");
 
         // Cleanup

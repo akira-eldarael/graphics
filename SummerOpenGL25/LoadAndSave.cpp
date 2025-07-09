@@ -129,10 +129,10 @@ void CreateDefaultScene()
             "assets/models/dolphin.ply",
             "assets/models/cow.ply",
             "assets/models/bun_zipper.ply"*/
-             "assets/models/Utah_Teapot.ply",
-            "assets/models/Utah_Teapot.ply",
-            "assets/models/Utah_Teapot.ply",
-            "assets/models/Utah_Teapot.ply"
+             "assets/models/Utah_Teapot_xyz_n_rgba.ply",
+            "assets/models/Utah_Teapot_xyz_n_rgba.ply",
+            "assets/models/Utah_Teapot_xyz_n_rgba.ply",
+            "assets/models/Utah_Teapot_xyz_n_rgba.ply"
         };
 
         // Find at least one working model file

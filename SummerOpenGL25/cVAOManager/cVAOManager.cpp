@@ -44,7 +44,8 @@ sModelDrawInfo::sModelDrawInfo()
 bool cVAOManager::LoadModelIntoVAO(
 		std::string fileName, 
 		sModelDrawInfo &drawInfo,
-	    unsigned int shaderProgramID)
+	    unsigned int shaderProgramID,
+		bool hasNormals, bool hasColors)
 
 {
 	// Load the model from file
@@ -53,7 +54,7 @@ bool cVAOManager::LoadModelIntoVAO(
 
 	drawInfo.meshName = fileName;
 
-	if ( ! this->m_LoadTheModel( fileName, drawInfo ) )
+	if ( ! this->m_LoadTheModel( fileName, drawInfo , hasNormals, hasColors) )
 	{
 		this->m_AppendTextToLastError( "Didn't load model", true );
 		return false;
@@ -84,7 +85,7 @@ bool cVAOManager::LoadModelIntoVAO(
 
 //	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, drawInfo.VertexBufferID);
-	// sVert vertices[3]
+	// sVert vertices[3]	
 	glBufferData( GL_ARRAY_BUFFER, 
 				  sizeof(sVert) * drawInfo.numberOfVertices,	// ::g_NumberOfVertsToDraw,	// sizeof(vertices), 
 				  (GLvoid*) drawInfo.pVertices,							// pVertices,			//vertices, 
@@ -170,15 +171,17 @@ bool cVAOManager::FindDrawInfoByModelName(
 
 
 bool cVAOManager::m_LoadTheModel(std::string fileName,
-								 sModelDrawInfo &drawInfo )
+	sModelDrawInfo& drawInfo,
+	bool hasNormals,
+	bool hasColours)
 {
 	// Open the file. 
 	// Read until we hit the word "vertex"
 	// Read until we hit the word "face"
 	// Read until we hit the word "end_header"
 
-	std::ifstream thePlyFile( fileName.c_str() );
-	if ( ! thePlyFile.is_open() )
+	std::ifstream thePlyFile(fileName.c_str());
+	if (!thePlyFile.is_open())
 	{	// Something is wrong...
 		std::stringstream ssError;
 		ssError << "Can't open >" << fileName << "< file." << std::endl;
@@ -186,43 +189,44 @@ bool cVAOManager::m_LoadTheModel(std::string fileName,
 		return false;
 	}
 
-	std::string temp; 
-	while ( thePlyFile >> temp )
+	std::string temp;
+	while (thePlyFile >> temp)
 	{
-		if ( temp == "vertex" ) 
+		if (temp == "vertex")
 		{
 			break;
 		}
-	}; 
+	};
 	// read the number of vertices...
 	thePlyFile >> drawInfo.numberOfVertices;	//::g_NumberOfVertices;
 
-	while ( thePlyFile >> temp )
+	while (thePlyFile >> temp)
 	{
-		if ( temp == "face" ) 
+		if (temp == "face")
 		{
 			break;
 		}
-	}; 
+	};
 	// read the number of triangles...
 	thePlyFile >> drawInfo.numberOfTriangles;		// ::g_NumberOfTriangles;
 
 
-	while ( thePlyFile >> temp )
+	while (thePlyFile >> temp)
 	{
-		if ( temp == "end_header" ) 
+		if (temp == "end_header")
 		{
 			break;
 		}
-	}; 
+	};
 
 	// And now, we start reading vertices... Hazzah!
-	
+
 	// This is set up to match the ply (3d model) file. 
 	// NOT the shader. 
 	struct sVertPly
 	{
 		glm::vec3 pos;
+		glm::vec3 norm;
 		glm::vec4 colour;
 	};
 
@@ -230,24 +234,33 @@ bool cVAOManager::m_LoadTheModel(std::string fileName,
 
 	sVertPly tempVert;
 	// Load the vertices...
-	for ( unsigned int index = 0; index != drawInfo.numberOfVertices; // ::g_NumberOfVertices; 
-		  index++ )
+	for (unsigned int index = 0; index != drawInfo.numberOfVertices; // ::g_NumberOfVertices; 
+		index++)
 	{
 		thePlyFile >> tempVert.pos.x >> tempVert.pos.y >> tempVert.pos.z;
-		
-
-//		tempVert.pos.x *= 10.0f;
-//		tempVert.pos.y *= 10.0f;
-//		tempVert.pos.z *= 10.0f;
 
 
-		thePlyFile >> tempVert.colour.x >> tempVert.colour.y
-			       >> tempVert.colour.z >> tempVert.colour.w; 
+		//		tempVert.pos.x *= 10.0f;
+		//		tempVert.pos.y *= 10.0f;
+		//		tempVert.pos.z *= 10.0f;
 
-		// Scale the colour from 0 to 1, instead of 0 to 255
-		tempVert.colour.x /= 255.0f;
-		tempVert.colour.y /= 255.0f;
-		tempVert.colour.z /= 255.0f;
+		if (hasNormals)
+		{
+			thePlyFile >> tempVert.norm.x >> tempVert.norm.y >> tempVert.norm.z;
+		}
+
+		if (hasColours)
+		{
+			thePlyFile >> tempVert.colour.x >> tempVert.colour.y
+				>> tempVert.colour.z >> tempVert.colour.w;
+
+			// Scale the colour from 0 to 1, instead of 0 to 255
+			tempVert.colour.x /= 255.0f;
+			tempVert.colour.y /= 255.0f;
+			tempVert.colour.z /= 255.0f;
+			tempVert.colour.a /= 255.0f;
+		}
+
 
 		// Add too... what? 
 		vecTempPlyVerts.push_back(tempVert);
@@ -260,27 +273,93 @@ bool cVAOManager::m_LoadTheModel(std::string fileName,
 
 	drawInfo.pVertices = new sVert[drawInfo.numberOfVertices];
 
+	if (hasNormals && hasColours)
+	{
+		for (unsigned int index = 0; index != drawInfo.numberOfVertices; index++)
+		{
+			drawInfo.pVertices[index].x = vecTempPlyVerts[index].pos.x;
+			drawInfo.pVertices[index].y = vecTempPlyVerts[index].pos.y;
+			drawInfo.pVertices[index].z = vecTempPlyVerts[index].pos.z;
+			drawInfo.pVertices[index].w = 1.0f; // when in doubt, set to 1.0f
+
+			drawInfo.pVertices[index].nx = vecTempPlyVerts[index].norm.x;
+			drawInfo.pVertices[index].ny = vecTempPlyVerts[index].norm.y;
+			drawInfo.pVertices[index].nz = vecTempPlyVerts[index].norm.z;
+			drawInfo.pVertices[index].nw = 1.0f; // when in doubt, set to 1.0f
+
+			drawInfo.pVertices[index].r = vecTempPlyVerts[index].colour.r;
+			drawInfo.pVertices[index].g = vecTempPlyVerts[index].colour.g;
+			drawInfo.pVertices[index].b = vecTempPlyVerts[index].colour.b;
+			drawInfo.pVertices[index].a = vecTempPlyVerts[index].colour.a;
+		}// for ( unsigned int index...
+	}
+	else if (hasNormals)
+	{
+		for (unsigned int index = 0; index != drawInfo.numberOfVertices; index++)
+		{
+			drawInfo.pVertices[index].x = vecTempPlyVerts[index].pos.x;
+			drawInfo.pVertices[index].y = vecTempPlyVerts[index].pos.y;
+			drawInfo.pVertices[index].z = vecTempPlyVerts[index].pos.z;
+			drawInfo.pVertices[index].w = 1.0f; // when in doubt, set to 1.0f
+
+			drawInfo.pVertices[index].nx = vecTempPlyVerts[index].norm.x;
+			drawInfo.pVertices[index].ny = vecTempPlyVerts[index].norm.y;
+			drawInfo.pVertices[index].nz = vecTempPlyVerts[index].norm.z;
+			drawInfo.pVertices[index].nw = 1.0f; // when in doubt, set to 1.0f
+
+			drawInfo.pVertices[index].r = 0.0f;
+			drawInfo.pVertices[index].g = 1.0f;
+			drawInfo.pVertices[index].b = 0.0f;
+			drawInfo.pVertices[index].a = 1.0f;
+		}// for ( unsigned int index...
+	}
+	else if (hasColours)
+	{
+		for (unsigned int index = 0; index != drawInfo.numberOfVertices; index++)
+		{
+			drawInfo.pVertices[index].x = vecTempPlyVerts[index].pos.x;
+			drawInfo.pVertices[index].y = vecTempPlyVerts[index].pos.y;
+			drawInfo.pVertices[index].z = vecTempPlyVerts[index].pos.z;
+			drawInfo.pVertices[index].w = 1.0f; // when in doubt, set to 1.0f
+
+			drawInfo.pVertices[index].nx = 0.0f;
+			drawInfo.pVertices[index].ny = 0.0f;
+			drawInfo.pVertices[index].nz = 0.0f;
+			drawInfo.pVertices[index].nw = 1.0f; // when in doubt, set to 1.0f
+
+			drawInfo.pVertices[index].r = vecTempPlyVerts[index].colour.r;
+			drawInfo.pVertices[index].g = vecTempPlyVerts[index].colour.g;
+			drawInfo.pVertices[index].b = vecTempPlyVerts[index].colour.b;
+			drawInfo.pVertices[index].a = vecTempPlyVerts[index].colour.a;
+
+		}// for ( unsigned int index...
+	}
+	else
+	{
+		for (unsigned int index = 0; index != drawInfo.numberOfVertices; index++)
+		{
+			drawInfo.pVertices[index].x = vecTempPlyVerts[index].pos.x;
+			drawInfo.pVertices[index].y = vecTempPlyVerts[index].pos.y;
+			drawInfo.pVertices[index].z = vecTempPlyVerts[index].pos.z;
+			drawInfo.pVertices[index].w = 1.0f; // when in doubt, set to 1.0f
+
+			drawInfo.pVertices[index].nx = 0.0f;
+			drawInfo.pVertices[index].ny = 0.0f;
+			drawInfo.pVertices[index].nz = 0.0f;
+			drawInfo.pVertices[index].nw = 1.0f; // when in doubt, set to 1.0f
+
+			drawInfo.pVertices[index].r = 0.0f;
+			drawInfo.pVertices[index].g = 1.0f;
+			drawInfo.pVertices[index].b = 0.0f;
+			drawInfo.pVertices[index].a = 1.0f;
+		}// for ( unsigned int index...
+	}
+
+
 	// Optional clear array to zero 
 	//memset( drawInfo.pVertices, 0, sizeof(sVert) * drawInfo.numberOfVertices);
 
-	for ( unsigned int index = 0; index != drawInfo.numberOfVertices; index++ )
-	{
-		drawInfo.pVertices[index].x = vecTempPlyVerts[index].pos.x;
-		drawInfo.pVertices[index].y = vecTempPlyVerts[index].pos.y;
-		drawInfo.pVertices[index].z = vecTempPlyVerts[index].pos.z;
-		drawInfo.pVertices[index].w = 1.0f;  // NEW!
 
-		drawInfo.pVertices[index].r = vecTempPlyVerts[index].colour.r;
-		drawInfo.pVertices[index].g = vecTempPlyVerts[index].colour.g;
-		drawInfo.pVertices[index].b = vecTempPlyVerts[index].colour.b;
-		drawInfo.pVertices[index].a = 1.0f;  // NEW!
-
-		// Initialize normals to zero (we'll calculate them next)
-		drawInfo.pVertices[index].nx = 0.0f;
-		drawInfo.pVertices[index].ny = 0.0f;
-		drawInfo.pVertices[index].nz = 0.0f;
-		drawInfo.pVertices[index].nw = 0.0f;
-	}// for ( unsigned int index...
 
 
 	struct sTriPly
@@ -292,24 +371,24 @@ bool cVAOManager::m_LoadTheModel(std::string fileName,
 	std::vector<sTriPly> vecTempPlyTriangles;
 	sTriPly tempTriangle;
 	unsigned int discard = 0;
-	for ( unsigned int index = 0; index != drawInfo.numberOfTriangles;	// ::g_NumberOfTriangles; 
-		  index++ )
+	for (unsigned int index = 0; index != drawInfo.numberOfTriangles;	// ::g_NumberOfTriangles; 
+		index++)
 	{
 		// 3 5622 5601 5640
 		thePlyFile >> discard						// the "3" at the start
-			       >> tempTriangle.vindex[0]
-			       >> tempTriangle.vindex[1]
-			       >> tempTriangle.vindex[2];
+			>> tempTriangle.vindex[0]
+			>> tempTriangle.vindex[1]
+			>> tempTriangle.vindex[2];
 
 		//// Look up the vertex that matches the triangle index values.
 		//tempTriangle.verts[0] = vecTempPlyVerts[ tempTriangle.vindex[0] ];
 		//tempTriangle.verts[1] = vecTempPlyVerts[ tempTriangle.vindex[1] ];
 		//tempTriangle.verts[2] = vecTempPlyVerts[ tempTriangle.vindex[2] ];
 
-		vecTempPlyTriangles.push_back( tempTriangle );
+		vecTempPlyTriangles.push_back(tempTriangle);
 	}//for ( unsigned int index...
 
-	
+
 	// NOW, we need to put them into the vertex array buffer that 
 	//	will be passed to OpenGL. Why? 
 	// Because we called glDrawArrays(), that's why. 
@@ -330,9 +409,9 @@ bool cVAOManager::m_LoadTheModel(std::string fileName,
 	// delete pVertices			/// error!
 	// delete [] pVertices		/// correct!!
 	unsigned int indexBufferIndex = 0;
-	for ( unsigned int triIndex = 0; 
-		  triIndex != drawInfo.numberOfTriangles;		// ::g_NumberOfTriangles; 
-		  triIndex++, indexBufferIndex += 3 )
+	for (unsigned int triIndex = 0;
+		triIndex != drawInfo.numberOfTriangles;		// ::g_NumberOfTriangles; 
+		triIndex++, indexBufferIndex += 3)
 	{
 		sTriPly& curTri = vecTempPlyTriangles[triIndex];
 
@@ -365,54 +444,6 @@ bool cVAOManager::m_LoadTheModel(std::string fileName,
 		//pVertices[ vertIndex + 2 ].b = curTri.verts[2].colour.z;
 //
 	}// for ( unsigned int triIndex = 0...
-
-	for (unsigned int triIndex = 0; triIndex != drawInfo.numberOfTriangles; triIndex++)
-	{
-		// Get the three vertex indices of this triangle
-		unsigned int i0 = drawInfo.pIndices[triIndex * 3 + 0];
-		unsigned int i1 = drawInfo.pIndices[triIndex * 3 + 1];
-		unsigned int i2 = drawInfo.pIndices[triIndex * 3 + 2];
-
-		// Get vertex positions
-		glm::vec3 v0(drawInfo.pVertices[i0].x, drawInfo.pVertices[i0].y, drawInfo.pVertices[i0].z);
-		glm::vec3 v1(drawInfo.pVertices[i1].x, drawInfo.pVertices[i1].y, drawInfo.pVertices[i1].z);
-		glm::vec3 v2(drawInfo.pVertices[i2].x, drawInfo.pVertices[i2].y, drawInfo.pVertices[i2].z);
-
-		// Calculate triangle normal using cross product
-		glm::vec3 edge1 = v1 - v0;
-		glm::vec3 edge2 = v2 - v0;
-		glm::vec3 normal = glm::normalize(glm::cross(edge1, edge2));
-
-		// Add this normal to all three vertices (we'll average later)
-		drawInfo.pVertices[i0].nx += normal.x;
-		drawInfo.pVertices[i0].ny += normal.y;
-		drawInfo.pVertices[i0].nz += normal.z;
-
-		drawInfo.pVertices[i1].nx += normal.x;
-		drawInfo.pVertices[i1].ny += normal.y;
-		drawInfo.pVertices[i1].nz += normal.z;
-
-		drawInfo.pVertices[i2].nx += normal.x;
-		drawInfo.pVertices[i2].ny += normal.y;
-		drawInfo.pVertices[i2].nz += normal.z;
-	}
-
-	// Normalize all vertex normals (average them out)
-	for (unsigned int index = 0; index != drawInfo.numberOfVertices; index++)
-	{
-		glm::vec3 normal(drawInfo.pVertices[index].nx,
-			drawInfo.pVertices[index].ny,
-			drawInfo.pVertices[index].nz);
-
-		// Only normalize if we have a valid normal
-		if (glm::length(normal) > 0.0001f) {
-			normal = glm::normalize(normal);
-			drawInfo.pVertices[index].nx = normal.x;
-			drawInfo.pVertices[index].ny = normal.y;
-			drawInfo.pVertices[index].nz = normal.z;
-		}
-		drawInfo.pVertices[index].nw = 0.0f; // Normals are vectors, not points
-	}
 
 	return true;
 }
