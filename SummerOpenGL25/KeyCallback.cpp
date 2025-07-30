@@ -1,6 +1,6 @@
 #include "KeyCallBack.h"
 #include <iostream>
-#include <glm/common.hpp>
+//#include <glm/common.hpp>
 #include "LoadAndSave.h"
 
 EditMode g_currentEditMode = EDIT_POSITION;

@@ -10,7 +10,6 @@
 #include <vector>
 
 #include <sstream>
-#include <glm/geometric.hpp>
 
 sModelDrawInfo::sModelDrawInfo()
 {
@@ -34,7 +33,7 @@ sModelDrawInfo::sModelDrawInfo()
 	glm::vec3 maxValues;
 	glm::vec3 minValues;
 
-//	scale = 5.0/maxExtent;		-> 5x5x5
+	//	scale = 5.0/maxExtent;		-> 5x5x5
 	float maxExtent;
 
 	return;
@@ -42,10 +41,11 @@ sModelDrawInfo::sModelDrawInfo()
 
 
 bool cVAOManager::LoadModelIntoVAO(
-		std::string fileName, 
-		sModelDrawInfo &drawInfo,
-	    unsigned int shaderProgramID,
-		bool hasNormals, bool hasColors)
+	std::string fileName,
+	sModelDrawInfo& drawInfo,
+	unsigned int shaderProgramID,
+	bool hasNormals,
+	bool hasColours)
 
 {
 	// Load the model from file
@@ -54,9 +54,9 @@ bool cVAOManager::LoadModelIntoVAO(
 
 	drawInfo.meshName = fileName;
 
-	if ( ! this->m_LoadTheModel( fileName, drawInfo , hasNormals, hasColors) )
+	if (!this->m_LoadTheModel(fileName, drawInfo, hasNormals, hasColours))
 	{
-		this->m_AppendTextToLastError( "Didn't load model", true );
+		this->m_AppendTextToLastError("Didn't load model", true);
 		return false;
 	}
 
@@ -69,7 +69,7 @@ bool cVAOManager::LoadModelIntoVAO(
 	//	from this buffer...
 
 	// Ask OpenGL for a new buffer ID...
-	glGenVertexArrays( 1, &(drawInfo.VAO_ID) );
+	glGenVertexArrays(1, &(drawInfo.VAO_ID));
 	// "Bind" this buffer:
 	// - aka "make this the 'current' VAO buffer
 	glBindVertexArray(drawInfo.VAO_ID);
@@ -81,27 +81,27 @@ bool cVAOManager::LoadModelIntoVAO(
 
 	// NOTE: OpenGL error checks have been omitted for brevity
 //	glGenBuffers(1, &vertex_buffer);
-	glGenBuffers(1, &(drawInfo.VertexBufferID) );
+	glGenBuffers(1, &(drawInfo.VertexBufferID));
 
-//	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+	//	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, drawInfo.VertexBufferID);
-	// sVert vertices[3]	
-	glBufferData( GL_ARRAY_BUFFER, 
-				  sizeof(sVert) * drawInfo.numberOfVertices,	// ::g_NumberOfVertsToDraw,	// sizeof(vertices), 
-				  (GLvoid*) drawInfo.pVertices,							// pVertices,			//vertices, 
-				  GL_STATIC_DRAW );
+	// sVert vertices[3]
+	glBufferData(GL_ARRAY_BUFFER,
+		sizeof(sVert) * drawInfo.numberOfVertices,	// ::g_NumberOfVertsToDraw,	// sizeof(vertices), 
+		(GLvoid*)drawInfo.pVertices,							// pVertices,			//vertices, 
+		GL_STATIC_DRAW);
 
 
 	// Copy the index buffer into the video card, too
 	// Create an index buffer.
-	glGenBuffers( 1, &(drawInfo.IndexBufferID) );
+	glGenBuffers(1, &(drawInfo.IndexBufferID));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drawInfo.IndexBufferID);
 
-	glBufferData( GL_ELEMENT_ARRAY_BUFFER,			// Type: Index element array
-	              sizeof( unsigned int ) * drawInfo.numberOfIndices, 
-	              (GLvoid*) drawInfo.pIndices,
-                  GL_STATIC_DRAW );
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,			// Type: Index element array
+		sizeof(unsigned int) * drawInfo.numberOfIndices,
+		(GLvoid*)drawInfo.pIndices,
+		GL_STATIC_DRAW);
 
 	// Set the vertex attributes.
 
@@ -135,29 +135,30 @@ bool cVAOManager::LoadModelIntoVAO(
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glDisableVertexAttribArray(vpos_location);
-	glDisableVertexAttribArray(vcol_location);
 	glDisableVertexAttribArray(vnorm_location);
+	glDisableVertexAttribArray(vcol_location);
 
 
 	// Store the draw information into the map
-	this->m_map_ModelName_to_VAOID[ drawInfo.meshName ] = drawInfo;
+	this->m_map_ModelName_to_VAOID[drawInfo.meshName] = drawInfo;
 
 
 	return true;
 }
 
 
+
 // We don't want to return an int, likely
 bool cVAOManager::FindDrawInfoByModelName(
-		std::string filename,
-		sModelDrawInfo &drawInfo) 
+	std::string filename,
+	sModelDrawInfo& drawInfo)
 {
 	std::map< std::string /*model name*/,
-			sModelDrawInfo /* info needed to draw*/ >::iterator 
-		itDrawInfo = this->m_map_ModelName_to_VAOID.find( filename );
+		sModelDrawInfo /* info needed to draw*/ >::iterator
+		itDrawInfo = this->m_map_ModelName_to_VAOID.find(filename);
 
 	// Find it? 
-	if ( itDrawInfo == this->m_map_ModelName_to_VAOID.end() )
+	if (itDrawInfo == this->m_map_ModelName_to_VAOID.end())
 	{
 		// Nope
 		return false;
@@ -260,7 +261,8 @@ bool cVAOManager::m_LoadTheModel(std::string fileName,
 			tempVert.colour.z /= 255.0f;
 			tempVert.colour.a /= 255.0f;
 		}
-
+		//float discard_u, discard_v;
+		//thePlyFile >> discard_u >> discard_v;
 
 		// Add too... what? 
 		vecTempPlyVerts.push_back(tempVert);
@@ -453,7 +455,7 @@ std::string cVAOManager::getLastError(bool bAndClear /*=true*/)
 {
 	std::string theLastError = this->m_lastErrorString;
 
-	if ( bAndClear )
+	if (bAndClear)
 	{
 		this->m_lastErrorString = "";
 	}
@@ -466,7 +468,7 @@ void cVAOManager::m_AppendTextToLastError(std::string text, bool addNewLineBefor
 	std::stringstream ssError;
 	ssError << this->m_lastErrorString;
 
-	if ( addNewLineBefore )
+	if (addNewLineBefore)
 	{
 		ssError << std::endl;
 	}

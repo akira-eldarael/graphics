@@ -1,13 +1,14 @@
 #pragma once
+#include "ModelInstance.h"
 #include <GLFW/glfw3.h>
 #include <glm/ext/vector_float3.hpp>
 #include <vector>
-#include "ModelInstance.h"
+
 
 // Movement speeds
-const float CAMERA_SPEED = 3.0f;
-const float EDIT_SPEED = 2.0f;
-const float ROTATION_SPEED = 5.0f;
+const float CAMERA_SPEED = 10.0f;
+const float EDIT_SPEED = 10.0f;
+const float ROTATION_SPEED = 10.0f;
 const float SCALE_SPEED = 0.1f;
 
 //extern variables to track key states

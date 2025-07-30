@@ -1,6 +1,6 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
-
-#include <glad/glad.h>
+    
+#include "GlobalOpenGL.h"
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
@@ -19,6 +19,7 @@
 #include <iostream>
 #include <random>
 #include <ctime>
+#include <algorithm>
 
 #include"ModelInstance.h"
 #include "KeyCallBack.h"
@@ -32,15 +33,26 @@
 cLightManager* g_pTheLightManager = NULL;
 cShaderManager* g_pTheShaderManager = NULL;
 cVAOManager* g_pMeshManager = NULL;
-glm::vec3 g_cameraEye = glm::vec3(-20.0, 45.5, 101.0f);
+/*test camera positions*/
+glm::vec3 g_cameraEye = glm::vec3(-90.0, -474.5, 241.0f);
 
 std::vector<ModelInstance> g_modelInstances;
 size_t g_selectedModelIndex = 0;
-
+std::vector<std::string> availableModels = {
+             "assets/dungeon_models/cp_models/Dragon2.5_ply.ply",
+             "assets/dungeon_models/cp_models/mig29.ply",
+             "assets/dungeon_models/cp_models/s21_No_normals.ply",
+             "assets/dungeon_models/cp_models/Seafloor2.ply",
+             "assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_01.ply",
+             "assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_02.ply",
+             "assets/dungeon_models/cp_models/ssj100.ply",
+             "assets/dungeon_models/cp_models/su47.ply",
+};
 void InitializeModels()
 {
-    //LoadSceneFromFile("scene.txt");
-    CreateDefaultScene();
+    //LoadSceneFromFile("assets/dungeon_models/cp_models/transforms.csv");
+    LoadSceneFromFile("assets/dungeon_models/cp_models/transforms.csv");
+    //CreateDefaultScene();
     //if (!LoadSceneFromFile("scene.txt")) { CreateDefaultScene(); }
     
 }
@@ -49,7 +61,6 @@ static void error_callback(int error, const char* description)
 {
     fprintf(stderr, "GLFW Error: %s\n", description);
 }
-
 
 
 int main(void)
@@ -77,15 +88,17 @@ int main(void)
             glfwTerminate();
             exit(EXIT_FAILURE);
         }
-
+        
         glfwSetKeyCallback(window, key_callback);
         glfwMakeContextCurrent(window);
         gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         glfwSwapInterval(1);
 
+        glClearColor(0.2f, 0.3f, 0.8f, 1.0f);
+
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
-
+        glClearDepth(1.0);
         
 
         // Initialize shaders
@@ -116,26 +129,26 @@ int main(void)
 
         // Set up 3 different colored lights for checkpoint
         // Light 0 - Bright Red (top-left area)
-        g_pTheLightManager->theLights[0].position = glm::vec4(-40.0f, 50.0f, 30.0f, 1.0f);
-		g_pTheLightManager->theLights[0].diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f); // is supposed to be Red turned white for testing
-        g_pTheLightManager->theLights[0].specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        g_pTheLightManager->theLights[0].atten = glm::vec4(0.1f, 0.01f, 0.001f, 1.0f); // Low linear, light quadratic
+        g_pTheLightManager->theLights[0].position = glm::vec4(-96.0896f, -9.87097f, 430.0f, 1.0f);
+		g_pTheLightManager->theLights[0].diffuse = glm::vec4(1.0f, 0.94f, 0.87f, 1.0f); // is supposed to be Red turned white for testing
+        g_pTheLightManager->theLights[0].specular = glm::vec4(1.0f, 0.94f, 0.87f, 1.0f);
+        g_pTheLightManager->theLights[0].atten = glm::vec4(0.1f, 0.0001f, 0.0001f, 1.0f); // Low linear, light quadratic
         g_pTheLightManager->theLights[0].param1.x = 0.0f; // Point light
         g_pTheLightManager->theLights[0].param2.x = 1.0f; // Turn ON
 
         // Light 1 - Bright Green (top-right area)  
-        g_pTheLightManager->theLights[1].position = glm::vec4(40.0f, 50.0f, 30.0f, 1.0f);
-		g_pTheLightManager->theLights[1].diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f); // is supposed to be Green turned to white for testing
-        g_pTheLightManager->theLights[1].specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        g_pTheLightManager->theLights[1].atten = glm::vec4(0.1f, 0.01f, 0.001f, 1.0f);
+        g_pTheLightManager->theLights[1].position = glm::vec4(141.571f, -15.3884f, 800.0f, 1.0f);
+		g_pTheLightManager->theLights[1].diffuse = glm::vec4(1.0f, 0.94f, 0.87f, 1.0f); // is supposed to be Green turned to white for testing
+        g_pTheLightManager->theLights[1].specular = glm::vec4(1.0f, 0.94f, 0.87f, 1.0f);
+        g_pTheLightManager->theLights[1].atten = glm::vec4(0.1f, 0.0001f, 0.00001f, 1.0f);
         g_pTheLightManager->theLights[1].param1.x = 0.0f; // Point light
         g_pTheLightManager->theLights[1].param2.x = 1.0f; // Turn ON
 
         // Light 2 - Bright Blue (center-back area)
-        g_pTheLightManager->theLights[2].position = glm::vec4(0.0f, 40.0f, -50.0f, 1.0f);
-		g_pTheLightManager->theLights[2].diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f); // is supposed to be Blue turnde to white for test
-        g_pTheLightManager->theLights[2].specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        g_pTheLightManager->theLights[2].atten = glm::vec4(0.1f, 0.01f, 0.001f, 1.0f);
+        g_pTheLightManager->theLights[2].position = glm::vec4(-200.549, -40.779, 500.503624, 1.0f);
+		g_pTheLightManager->theLights[2].diffuse = glm::vec4(1.0f, 0.94f, 0.87f, 1.0f); // is supposed to be Blue turnde to white for test
+        g_pTheLightManager->theLights[2].specular = glm::vec4(1.0f, 0.94f, 0.87f, 1.0f);
+        g_pTheLightManager->theLights[2].atten = glm::vec4(0.1f, 0.0001f, 0.00001f, 1.0f);
         g_pTheLightManager->theLights[2].param1.x = 0.0f; // Point light
         g_pTheLightManager->theLights[2].param2.x = 1.0f; // Turn ON
 
@@ -145,22 +158,20 @@ int main(void)
 
         // Initialize models
         InitializeModels();
-
+        /*test space*/
         // Load models into VAO
-        for (size_t i = 0; i < g_modelInstances.size(); i++)
+        for (size_t i = 0; i < availableModels.size(); i++)
         {
-            const auto& instance = g_modelInstances[i];
-            std::string instanceKey = instance.meshName + "_instance_" + std::to_string(i);
+            std::string _name = availableModels[i];
 
             sModelDrawInfo modelInfo;
-            if (g_pMeshManager->LoadModelIntoVAO(instance.meshName, modelInfo, program, true, true))
+            if (g_pMeshManager->LoadModelIntoVAO(_name, modelInfo, program, true, true))
             {
-                std::cout << "Loaded: " << instance.displayName << " (Color: "
-                    << instance.color.r << ", " << instance.color.g << ", " << instance.color.b << ")" << std::endl;
+                std::cout << "Loaded: " << _name << std::endl;
             }
             else
             {
-                std::cout << "Failed to load: " << instance.meshName << std::endl;
+                std::cout << "Failed to load: " << _name << std::endl;
             }
         }
 
@@ -179,10 +190,19 @@ int main(void)
         {
             std::cout << "WARNING: No models loaded!" << std::endl;
         }
-
+        /*enable transpercy{to let the gpu know we will be using aplha valur from now on}*/
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        /*split for transperant objects*/
+        std::vector<ModelInstance> t_objects;
+        for (size_t i = 0; i < g_modelInstances.size(); i++)
+        {
+            if (extractFolderName(g_modelInstances[i].meshName))t_objects.push_back(g_modelInstances[i]);   
+        }
         // Main render loop
         while (!glfwWindowShouldClose(window))
         {
+            float transperancy = 1.0f;
             try {
                 float ratio;
                 int width, height;
@@ -194,14 +214,20 @@ int main(void)
 
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                projection = glm::perspective(glm::radians(45.0f), ratio, 0.1f, 1000.0f);
-                glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-                glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
+                projection = glm::perspective(glm::radians(45.0f), ratio, 1.0f, 100000.0f);
+                glm::vec3 cameraTarget = glm::vec3(-315.25927734375f, -261.2432861328125f, 77.5234146118164f);
+                //glm::vec3 cameraTarget = glm::vec3(-307.9396667480469f, 236.92022705078125f, 95.74645233154297f);
+                glm::vec3 upVector = glm::vec3(0.0f, 0.0f, 1.0f);
                 view = glm::lookAt(g_cameraEye, cameraTarget, upVector);
 
                 glUseProgram(program);
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                /*tittle space*/
+                std::ostringstream titleStream;
+                titleStream << "camera : (" << g_cameraEye.x << ", " << g_cameraEye.y << ", " << g_cameraEye.z << ")		"
+                    /* "target : (" << cameraTarget.x << ", " << cameraTarget.y << ", " << cameraTarget.z << ")"*/;
 
+                glfwSetWindowTitle(window, titleStream.str().c_str());
                 // Set up lighting uniforms
                 GLint eyeLocation_UL = glGetUniformLocation(program, "eyeLocation");
                 glUniform3f(eyeLocation_UL, g_cameraEye.x, g_cameraEye.y, g_cameraEye.z);
@@ -210,59 +236,41 @@ int main(void)
                 g_pTheLightManager->UpdateShaderUniforms(program);
 
                 // Get matrix uniform locations
-                GLint mModel_UL = glGetUniformLocation(program, "mModel");
+               
                 GLint mView_UL = glGetUniformLocation(program, "mView");
                 GLint mProj_UL = glGetUniformLocation(program, "mProj");
-                GLint mModel_InverseTranpose_UL = glGetUniformLocation(program, "mModel_InverseTranpose");
+                
+                /*for transparency*/
+               
 
                 // Set view and projection matrices (same for all objects)
                 glUniformMatrix4fv(mView_UL, 1, GL_FALSE, glm::value_ptr(view));
                 glUniformMatrix4fv(mProj_UL, 1, GL_FALSE, glm::value_ptr(projection));
-
+                /*sort for T objects*/
+                std::sort(t_objects.begin(), t_objects.end(),
+                    [](const ModelInstance& a, const ModelInstance& b) {
+                        float distA = glm::distance(g_cameraEye, a.position);
+                        float distB = glm::distance(g_cameraEye, b.position);
+                        return distA > distB; // Sort from farthest to nearest
+                    });
                 // Render all 10 models
-                for (size_t i = 0; i < g_modelInstances.size(); i++)
-                {
-                    const auto& instance = g_modelInstances[i];
-
-                    glm::mat4 model = glm::mat4(1.0f);
-                    model = glm::translate(model, instance.position);
-                    model = glm::rotate(model, glm::radians(instance.orientation.x), glm::vec3(1, 0, 0));
-                    model = glm::rotate(model, glm::radians(instance.orientation.y), glm::vec3(0, 1, 0));
-                    model = glm::rotate(model, glm::radians(instance.orientation.z), glm::vec3(0, 0, 1));
-                    model = glm::scale(model, instance.scale);
-
-                    // Calculate inverse transpose for normal transformation
-                    glm::mat4 mModel_InverseTranspose = glm::inverse(glm::transpose(model));
-
-                    // Set model matrix uniforms
-                    glUniformMatrix4fv(mModel_UL, 1, GL_FALSE, glm::value_ptr(model));
-                    glUniformMatrix4fv(mModel_InverseTranpose_UL, 1, GL_FALSE, glm::value_ptr(mModel_InverseTranspose));
-
-                    mvp = projection * view * model;
-                    glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(mvp));
-
-                    sModelDrawInfo modelToDraw;
-                    if (g_pMeshManager->FindDrawInfoByModelName(instance.meshName, modelToDraw))
-                    {
-                        // Highlight selected object with thicker lines
-                        if (i == g_selectedModelIndex)
-                        {
-                            glLineWidth(4.0f); // Extra thick for selected object
-                        }
-                        else
-                        {
-                            glLineWidth(1.0f);
-                        }
-
-                        glBindVertexArray(modelToDraw.VAO_ID);
-                        glDrawElements(GL_TRIANGLES, modelToDraw.numberOfIndices, GL_UNSIGNED_INT, (void*)0);
-                        glBindVertexArray(0);
+                for (size_t i = 0; i < g_modelInstances.size(); i++) {
+                    if (extractFolderName(g_modelInstances[i].meshName)) {
+                       /* draw_mesh(g_modelInstances[i], program, transperancy);
+                        transperancy -= 0.1428571428571429;*/
+                        continue;
                     }
+                    else draw_mesh(g_modelInstances[i], program, 1.0f);
+                }
+                for (auto& ins : t_objects) {
+                    transperancy-= 0.1128571428571429;
+                    draw_mesh(ins, program, transperancy);
                 }
 
                 glLineWidth(1.0f); // Reset line width
                 glfwSwapBuffers(window);
                 glfwPollEvents();
+               
             }
             catch (const std::exception& e) {
                 std::cout << "Error in render loop: " << e.what() << std::endl;

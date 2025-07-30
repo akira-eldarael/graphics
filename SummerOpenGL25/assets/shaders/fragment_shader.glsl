@@ -6,6 +6,7 @@ in vec4 vertColor;
 in vec4 vertNormal;
 in vec4 vertWorldPosition;
 
+uniform	float alpha_transparency;
 out vec4 pixelColour;
 
 vec4 calculateLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
@@ -45,6 +46,7 @@ void main()
 	pixelColour.rgb = lightContrib.rgb;
 	//for debugging
 	//pixelColour.rgb = vertColor.rgb; 
+	pixelColour.a = alpha_transparency;
 };
 
 // Feeney gave you this (it's inspired by the basic shader in Mike Bailey's Graphic Shaders book)

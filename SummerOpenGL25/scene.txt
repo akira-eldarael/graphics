@@ -1,15 +1,20 @@
-# Scene file for INFO-3111 Checkpoint #5
-# Student: Rahul Krishna Viahr Anilkumar (1191628)
-# Date: 2025-06-27 01:17:12
-# Format: meshName posX posY posZ orientX orientY orientZ scaleX scaleY scaleZ
-#
-assets/models/Utah_Teapot.ply -40 0 -44 -565 315 0 0.2 0.2 0.21
-assets/models/dolphin.ply 1 0 -78 1090 41 0 0.09 0.09 0.11
-assets/models/cow.ply 0 0 -22 0 72 0 1.7 1.7 1.7
-assets/models/bun_zipper.ply -17 0 -10 0 108 0 65 65 65
-assets/models/Utah_Teapot.ply 50 0 28 0 144 0 0.2 0.2 0.21
-assets/models/dolphin.ply 36 0 -30 -50 5 0 0.13 0.13 0.13
-assets/models/cow.ply -23 0 34 0 216 0 2.7 2.7 2.8
-assets/models/bun_zipper.ply -4 0 92 0 252 0 95 95 95
-assets/models/Utah_Teapot.ply 11 0 38 -10 288 0 0.2 0.2 0.21
-assets/models/dolphin.ply 96 0 10 0 324 0 0.17 0.17 0.17
+assets/dungeon_models/cp_models/Dragon2.5_ply.ply -96.0896 -9.87097 0 0 -0 87.4477 2.40573 2.40573 2.40573
+assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_01.ply -105.549 -111.779 0.503624 100.132 -0 0 0.0775042 0.0993369 0.0782957
+assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_01.ply -187.993 -82.1139 -2.86217 100.132 -0 -129.679 0.0775042 0.0993369 0.0782957
+assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_01.ply -191.172 -130.162 8.69113 100.132 -0 -51.4525 0.0775042 0.0993369 0.0782957
+assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_01.ply -190.549 -43.7717 3.1116 100.132 -0 -129.679 0.0775042 0.0993369 0.0782957
+assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_01.ply -139.352 -134.533 -1.92093 100.132 -0 0 0.0775042 0.0993369 0.0782957
+assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_01.ply -161.903 -108.531 -12.4795 100.132 -0 -58.2188 0.0775042 0.0993369 0.0782957
+assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_02.ply -129.21 92.4326 3.43985 88.4381 -0.701782 -24.1894 0.0990541 0.0990541 0.0990541
+assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_02.ply -179.919 56.9306 2.49575 88.4381 -0.701782 18.6321 0.122506 0.122506 0.122506
+assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_02.ply -174.861 109.722 1.17797 88.4381 -0.701782 24.4959 0.122506 0.122506 0.122506
+assets/dungeon_models/cp_models/SM_Env_Crystals_Cluster_Large_02.ply -184.508 31.9253 -1.41676 88.4381 -0.701782 66.7618 0.122506 0.122506 0.122506
+assets/dungeon_models/cp_models/Seafloor2.ply 0 -8.63315 -7.18717 90.0608 -0 0 50.827278 0.827278 50.827278
+assets/dungeon_models/cp_models/mig29.ply 49.7235 -2.65411 78.5751 1.07471 270.209 -90.6627 70.8632 70.8632 70.8632
+assets/dungeon_models/cp_models/s21_No_normals.ply -5.93628 84.6869 78.194 93.5352 320 -63.4907 70.8632 70.8632 70.8632
+assets/dungeon_models/cp_models/s21_No_normals.ply 57.7684 43.6617 106.568 117.491 -51.4488 -65.9274 70.8632 70.8632 70.8632
+assets/dungeon_models/cp_models/ssj100.ply 141.571 -15.3884 54.5834 13.5352 -90 -90.695 101.953 101.953 101.953
+assets/dungeon_models/cp_models/ssj100.ply 128.829 -100.471 30.0254 373.535 -90 -90.695 101.953 101.953 101.953
+assets/dungeon_models/cp_models/ssj100.ply 148.792 67.995 33.4724 -6.46478 -80 -90.695 101.953 101.953 101.953
+assets/dungeon_models/cp_models/su47.ply -0.821106 -113.515 80.2386 404.651 246.444 -96.8159 59.3361 138.18 96.9457
+assets/dungeon_models/cp_models/su47.ply 26.2792 -75.0022 118.008 -385.349 -123.556 -123.695 59.3361 138.18 96.9457
